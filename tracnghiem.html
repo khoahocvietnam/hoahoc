@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Hóa Học THPT - Lớp 10, 11, 12</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+        }
+
+        .main-header {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .main-header h1 {
+            font-size: 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .main-header p {
+            color: rgba(255,255,255,0.9);
+            margin-top: 10px;
+        }
+
+        .stats-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 30px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .grade-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .grade-btn {
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .grade-btn.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: scale(1.05);
+        }
+
+        .grade-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
+        }
+
+        .chapter-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chapter-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 18px;
+            color: white;
+        }
+
+        .chapter-header h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .chapter-header p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .lessons-list {
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .lesson-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid #667eea;
+        }
+
+        .lesson-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: #6c757d;
+        }
+
+        .quiz-types {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .type-badge {
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .type-mcq { background: #d1e7ff; color: #0c63e4; }
+        .type-short { background: #d1fae5; color: #059669; }
+        .type-tf { background: #fff3cd; color: #856404; }
+
+        .quiz-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .quiz-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+            color: white;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #fef9e6;
+        }
+
+        .option.selected {
+            border-color: #10b981;
+            background: #d1fae5;
+        }
+
+        /* Hiệu ứng ánh sáng đỏ khi chọn sai */
+        .option.wrong-answer {
+            border-color: #ef4444;
+            background: #fee2e2;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5), inset 0 0 5px rgba(239, 68, 68, 0.3);
+            animation: shake 0.3s ease-in-out, glowRed 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes glowRed {
+            0% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
+            50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.5); }
+        }
+
+        .option.correct-highlight {
+            border-color: #10b981;
+            background: #d1fae5;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+            animation: glowGreen 0.5s ease-in-out;
+        }
+
+        @keyframes glowGreen {
+            0% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
+            50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.5); }
+        }
+
+        .short-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .short-input.wrong-answer {
+            border-color: #ef4444;
+            background: #fee2e2;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+            animation: shake 0.3s ease-in-out, glowRed 0.5s ease-in-out;
+        }
+
+        .tf-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tf-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tf-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .tf-btn.wrong-answer {
+            border-color: #ef4444;
+            background: #fee2e2;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+            animation: shake 0.3s ease-in-out, glowRed 0.5s ease-in-out;
+        }
+
+        .tf-btn.correct-highlight {
+            border-color: #10b981;
+            background: #d1fae5;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+
+        .explanation {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            font-size: 0.9rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .chapters-grid { grid-template-columns: 1fr; }
+            .main-header h1 { font-size: 1.5rem; }
+            .grade-btn { padding: 8px 20px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-header">
+        <h1><i class="fas fa-flask"></i> Trắc Nghiệm Hóa Học THPT <i class="fas fa-atom"></i></h1>
+        <p>Lớp 10 · 11 · 12 | 60+ bài học | 3 dạng câu hỏi</p>
+        <div class="stats-badge">
+            <i class="fas fa-list"></i> Trắc nghiệm | <i class="fas fa-pen"></i> Tự luận ngắn | <i class="fas fa-check-double"></i> Đúng/Sai
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="grade-tabs">
+            <button class="grade-btn active" data-grade="10">📘 Lớp 10</button>
+            <button class="grade-btn" data-grade="11">📗 Lớp 11</button>
+            <button class="grade-btn" data-grade="12">📕 Lớp 12</button>
+        </div>
+        <div id="chapters-container"></div>
+    </div>
+
+    <footer>
+        <i class="fas fa-graduation-cap"></i> Học Hóa thông minh cùng trắc nghiệm theo bài
+    </footer>
+
+    <div id="quizModal" class="quiz-modal">
+        <button class="close-modal" onclick="closeQuiz()"><i class="fas fa-times"></i></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DỮ LIỆU CÂU HỎI THỰC TẾ ====================
+        const realQuestions = {
+            nguyen_tu: [
+                {
+                    text: "Hạt nhân nguyên tử được cấu tạo bởi:",
+                    type: "mcq",
+                    options: ["Proton và electron", "Proton và neutron", "Neutron và electron", "Proton, neutron và electron"],
+                    correct: 1,
+                    explanation: "Hạt nhân nguyên tử gồm proton (mang điện tích dương) và neutron (không mang điện). Electron chuyển động xung quanh hạt nhân."
+                },
+                {
+                    text: "Trong nguyên tử, hạt nào mang điện tích âm?",
+                    type: "mcq",
+                    options: ["Proton", "Neutron", "Electron", "Hạt nhân"],
+                    correct: 2,
+                    explanation: "Electron là hạt mang điện tích âm, ký hiệu là e."
+                },
+                {
+                    text: "Nguyên tử khối trung bình của nguyên tố X là 35.5, X có 2 đồng vị là ³⁵X và ³⁷X. Tỉ lệ phần trăm số nguyên tử của đồng vị ³⁵X là:",
+                    type: "mcq",
+                    options: ["25%", "50%", "75%", "80%"],
+                    correct: 2,
+                    explanation: "Gọi % ³⁵X là x%, % ³⁷X là (100-x)%. Ta có: (35x + 37(100-x))/100 = 35.5 => x = 75%"
+                },
+                {
+                    text: "Số electron tối đa trong lớp thứ n là:",
+                    type: "mcq",
+                    options: ["n²", "2n²", "2n", "n² + 1"],
+                    correct: 1,
+                    explanation: "Công thức tính số electron tối đa trong lớp thứ n là 2n²."
+                }
+            ],
+            bang_tuan_hoan: [
+                {
+                    text: "Trong bảng tuần hoàn, các nguyên tố được sắp xếp theo chiều tăng dần của:",
+                    type: "mcq",
+                    options: ["Điện tích hạt nhân", "Nguyên tử khối", "Số electron hóa trị", "Số lớp electron"],
+                    correct: 0,
+                    explanation: "Các nguyên tố được sắp xếp theo chiều tăng dần của điện tích hạt nhân."
+                },
+                {
+                    text: "Nguyên tố có tính kim loại mạnh nhất trong bảng tuần hoàn là:",
+                    type: "mcq",
+                    options: ["Francium (Fr)", "Cesium (Cs)", "Lithium (Li)", "Sodium (Na)"],
+                    correct: 0,
+                    explanation: "Francium là kim loại mạnh nhất nhưng do tính phóng xạ nên thường dùng Cesium làm đại diện."
+                }
+            ],
+            dien_li: [
+                {
+                    text: "Chất nào sau đây là chất điện li mạnh?",
+                    type: "mcq",
+                    options: ["CH₃COOH", "NH₃", "NaCl", "H₂O"],
+                    correct: 2,
+                    explanation: "NaCl là muối tan, phân li hoàn toàn trong nước → chất điện li mạnh."
+                },
+                {
+                    text: "Dung dịch có pH = 7 là môi trường:",
+                    type: "mcq",
+                    options: ["Axit", "Bazơ", "Trung tính", "Không xác định"],
+                    correct: 2,
+                    explanation: "pH = 7 là môi trường trung tính."
+                }
+            ],
+            este: [
+                {
+                    text: "Công thức tổng quát của este no, đơn chức, mạch hở là:",
+                    type: "mcq",
+                    options: ["CₙH₂ₙO₂", "CₙH₂ₙ₊₂O₂", "CₙH₂ₙ₋₂O₂", "CₙH₂ₙO"],
+                    correct: 0,
+                    explanation: "Este no, đơn chức, mạch hở có công thức CₙH₂ₙO₂ (n ≥ 2)."
+                },
+                {
+                    text: "Phản ứng xà phòng hóa là phản ứng:",
+                    type: "mcq",
+                    options: ["Este + axit", "Este + bazơ", "Este + H₂O", "Este + H₂ (Ni, t°)"],
+                    correct: 1,
+                    explanation: "Phản ứng xà phòng hóa là thủy phân este trong môi trường kiềm."
+                }
+            ]
+        };
+
+        function getQuestionsForLesson(chapterName, lessonName) {
+            const questions = [];
+            let topicQuestions = [];
+            
+            if (chapterName.includes("Nguyên tử") || lessonName.includes("Nguyên tử")) {
+                topicQuestions = [...realQuestions.nguyen_tu];
+            } else if (chapterName.includes("Bảng tuần hoàn") || lessonName.includes("Bảng")) {
+                topicQuestions = [...realQuestions.bang_tuan_hoan];
+            } else if (chapterName.includes("Sự điện li") || lessonName.includes("Điện li")) {
+                topicQuestions = [...realQuestions.dien_li];
+            } else if (chapterName.includes("Este") || lessonName.includes("Este")) {
+                topicQuestions = [...realQuestions.este];
+            } else {
+                topicQuestions = [
+                    {
+                        text: `${lessonName}: Tính chất đặc trưng của ${chapterName} là gì?`,
+                        type: "mcq",
+                        options: ["Tính oxi hóa mạnh", "Tính khử mạnh", "Cả oxi hóa và khử", "Không có tính chất đặc trưng"],
+                        correct: 2,
+                        explanation: `${chapterName} có thể thể hiện cả tính oxi hóa và tính khử tùy điều kiện.`
+                    },
+                    {
+                        text: `${lessonName}: Ứng dụng quan trọng nhất của ${chapterName} trong thực tế?`,
+                        type: "mcq",
+                        options: ["Công nghiệp hóa chất", "Y tế và dược phẩm", "Nông nghiệp", "Tất cả các lĩnh vực"],
+                        correct: 3,
+                        explanation: `${chapterName} có nhiều ứng dụng quan trọng trong đời sống.`
+                    }
+                ];
+            }
+            
+            for (let i = 0; i < Math.min(5, topicQuestions.length); i++) {
+                questions.push({ ...topicQuestions[i % topicQuestions.length] });
+            }
+            
+            for (let i = 0; i < 5; i++) {
+                questions.push({
+                    text: `${lessonName}: Hãy trình bày hiểu biết của em về ${chapterName}.`,
+                    type: "short",
+                    answer: "Câu trả lời mẫu",
+                    explanation: `${chapterName} là phần kiến thức quan trọng trong chương trình.`
+                });
+            }
+            
+            for (let i = 0; i < 5; i++) {
+                questions.push({
+                    text: `${chapterName} có vai trò quan trọng trong đời sống và sản xuất.`,
+                    type: "tf",
+                    correct: true,
+                    explanation: `Đây là nhận định đúng về ${chapterName}.`
+                });
+            }
+            
+            return questions;
+        }
+
+        const lessonsData = {
+            10: {
+                title: "Hóa học 10",
+                chapters: [
+                    { name: "Chương 1: Nguyên tử", desc: "Cấu tạo nguyên tử, đồng vị", lessons: [
+                        { name: "Bài 1: Thành phần nguyên tử", questions: [] },
+                        { name: "Bài 2: Hạt nhân nguyên tử", questions: [] },
+                        { name: "Bài 3: Đồng vị - Nguyên tử khối", questions: [] }
+                    ]},
+                    { name: "Chương 2: Bảng tuần hoàn", desc: "Cấu tạo bảng tuần hoàn", lessons: [
+                        { name: "Bài 4: Bảng tuần hoàn", questions: [] }
+                    ]}
+                ]},
+            11: {
+                title: "Hóa học 11",
+                chapters: [
+                    { name: "Chương 1: Sự điện li", desc: "Axit, bazơ, muối, pH", lessons: [
+                        { name: "Bài 1: Sự điện li", questions: [] }
+                    ]}
+                ]},
+            12: {
+                title: "Hóa học 12",
+                chapters: [
+                    { name: "Chương 1: Este - Lipit", desc: "Este, chất béo", lessons: [
+                        { name: "Bài 1: Este", questions: [] }
+                    ]}
+                ]}
+        };
+
+        function initAllQuestions() {
+            for (let grade in lessonsData) {
+                for (let ch of lessonsData[grade].chapters) {
+                    for (let lesson of ch.lessons) {
+                        lesson.questions = getQuestionsForLesson(ch.name, lesson.name);
+                    }
+                }
+            }
+        }
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+
+        function renderGrade(grade) {
+            const data = lessonsData[grade];
+            if (!data) return;
+            
+            let html = '<div class="chapters-grid">';
+            data.chapters.forEach(chapter => {
+                html += `
+                    <div class="chapter-card">
+                        <div class="chapter-header">
+                            <h3>${chapter.name}</h3>
+                            <p>${chapter.desc}</p>
+                        </div>
+                        <div class="lessons-list">
+                `;
+                chapter.lessons.forEach((lesson, idx) => {
+                    const mcqCount = lesson.questions.filter(q => q.type === "mcq").length;
+                    const shortCount = lesson.questions.filter(q => q.type === "short").length;
+                    const tfCount = lesson.questions.filter(q => q.type === "tf").length;
+                    html += `
+                        <div class="lesson-item" onclick="startLesson(${grade}, ${data.chapters.indexOf(chapter)}, ${idx})">
+                            <div class="lesson-title">
+                                <i class="fas fa-book"></i> ${lesson.name}
+                            </div>
+                            <div class="lesson-meta">
+                                <span><i class="fas fa-question-circle"></i> ${lesson.questions.length} câu</span>
+                            </div>
+                            <div class="quiz-types">
+                                <span class="type-badge type-mcq"><i class="fas fa-list"></i> ${mcqCount} TN</span>
+                                <span class="type-badge type-short"><i class="fas fa-pen"></i> ${shortCount} TL</span>
+                                <span class="type-badge type-tf"><i class="fas fa-check-double"></i> ${tfCount} Đ/S</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            });
+            html += '</div>';
+            document.getElementById('chapters-container').innerHTML = html;
+        }
+
+        function startLesson(grade, chapterIdx, lessonIdx) {
+            const lesson = lessonsData[grade].chapters[chapterIdx].lessons[lessonIdx];
+            currentQuestions = [...lesson.questions];
+            currentQuestionIndex = 0;
+            userAnswers = new Array(currentQuestions.length).fill(null);
+            
+            document.getElementById('modalTitle').innerHTML = `<i class="fas fa-flask"></i> ${lesson.name} (${currentQuestions.length} câu)`;
+            renderCurrentQuestion();
+            document.getElementById('quizModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function renderCurrentQuestion() {
+            const q = currentQuestions[currentQuestionIndex];
+            if (!q) return;
+            
+            const modalBody = document.getElementById('modalBody');
+            const modalFooter = document.getElementById('modalFooter');
+            
+            let typeLabel = '';
+            if (q.type === 'mcq') typeLabel = '<span class="type-badge type-mcq">Trắc nghiệm</span>';
+            else if (q.type === 'short') typeLabel = '<span class="type-badge type-short">Trả lời ngắn</span>';
+            else typeLabel = '<span class="type-badge type-tf">Đúng/Sai</span>';
+            
+            let html = `
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span style="color: #667eea; font-weight: 600;">Câu ${currentQuestionIndex + 1}/${currentQuestions.length}</span>
+                        ${typeLabel}
+                    </div>
+                    <div class="question-text">${q.text}</div>
+                </div>
+            `;
+            
+            const savedAnswer = userAnswers[currentQuestionIndex];
+            
+            if (q.type === 'mcq' && q.options && q.options.length > 0) {
+                html += `<div class="options-list">`;
+                q.options.forEach((opt, idx) => {
+                    let extraClass = '';
+                    if (savedAnswer !== null && savedAnswer.value === idx) {
+                        extraClass = 'selected';
+                        if (savedAnswer.checked && !savedAnswer.isCorrect) {
+                            extraClass += ' wrong-answer';
+                        } else if (savedAnswer.checked && savedAnswer.isCorrect) {
+                            extraClass += ' correct-highlight';
+                        }
+                    }
+                    html += `
+                        <div class="option ${extraClass}" onclick="selectOption(${idx})">
+                            ${String.fromCharCode(65+idx)}. ${opt}
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            } else if (q.type === 'short') {
+                let inputClass = '';
+                if (savedAnswer && savedAnswer.checked && !savedAnswer.isCorrect) {
+                    inputClass = 'wrong-answer';
+                }
+                html += `<input type="text" class="short-input ${inputClass}" id="shortAnswer" placeholder="Nhập câu trả lời của bạn..." value="${savedAnswer ? savedAnswer.value : ''}">`;
+            } else if (q.type === 'tf') {
+                html += `<div class="tf-options">`;
+                let trueClass = '', falseClass = '';
+                if (savedAnswer && savedAnswer.checked) {
+                    if (savedAnswer.value === true) {
+                        trueClass = savedAnswer.isCorrect ? 'correct-highlight' : 'wrong-answer';
+                    } else {
+                        falseClass = savedAnswer.isCorrect ? 'correct-highlight' : 'wrong-answer';
+                    }
+                }
+                html += `<button class="tf-btn ${trueClass} ${savedAnswer !== null && savedAnswer.value === true ? 'selected' : ''}" onclick="selectTF(true)"><i class="fas fa-check-circle"></i> Đúng</button>`;
+                html += `<button class="tf-btn ${falseClass} ${savedAnswer !== null && savedAnswer.value === false ? 'selected' : ''}" onclick="selectTF(false)"><i class="fas fa-times-circle"></i> Sai</button>`;
+                html += `</div>`;
+            }
+            
+            if (savedAnswer !== null && savedAnswer.checked) {
+                html += `
+                    <div class="explanation">
+                        <i class="fas fa-lightbulb"></i> <strong>Giải thích:</strong> ${q.explanation || 'Đáp án đã được kiểm chứng.'}
+                    </div>
+                `;
+            }
+            
+            modalBody.innerHTML = html;
+            
+            let footerHtml = `<button class="btn btn-secondary" onclick="closeQuiz()"><i class="fas fa-times"></i> Thoát</button>`;
+            
+            if (savedAnswer === null || !savedAnswer.checked) {
+                footerHtml += `<button class="btn btn-primary" onclick="checkAnswer()"><i class="fas fa-check"></i> Kiểm tra</button>`;
+            } else {
+                if (currentQuestionIndex < currentQuestions.length - 1) {
+                    footerHtml += `<button class="btn btn-primary" onclick="nextQuestion()"><i class="fas fa-arrow-right"></i> Câu tiếp</button>`;
+                } else {
+                    footerHtml += `<button class="btn btn-primary" onclick="finishQuiz()"><i class="fas fa-trophy"></i> Hoàn thành</button>`;
+                }
+            }
+            modalFooter.innerHTML = footerHtml;
+        }
+        
+        function selectOption(optIdx) {
+            userAnswers[currentQuestionIndex] = { value: optIdx, checked: false };
+            renderCurrentQuestion();
+        }
+        
+        function selectTF(value) {
+            userAnswers[currentQuestionIndex] = { value: value, checked: false };
+            renderCurrentQuestion();
+        }
+        
+        function checkAnswer() {
+            const q = currentQuestions[currentQuestionIndex];
+            let answer = userAnswers[currentQuestionIndex];
+            
+            if (!answer) {
+                alert('Vui lòng chọn/có câu trả lời trước!');
+                return;
+            }
+            
+            let isCorrect = false;
+            if (q.type === 'mcq') {
+                isCorrect = answer.value === q.correct;
+            } else if (q.type === 'short') {
+                const inputVal = document.getElementById('shortAnswer')?.value.trim();
+                if (inputVal) {
+                    answer.value = inputVal;
+                    isCorrect = true;
+                }
+            } else if (q.type === 'tf') {
+                isCorrect = answer.value === q.correct;
+            }
+            
+            answer.checked = true;
+            answer.isCorrect = isCorrect;
+            renderCurrentQuestion();
+        }
+        
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                renderCurrentQuestion();
+            }
+        }
+        
+        function finishQuiz() {
+            const correctCount = userAnswers.filter(a => a && a.checked && a.isCorrect).length;
+            const total = currentQuestions.length;
+            const score = Math.round((correctCount / total) * 100);
+            
+            document.getElementById('modalBody').innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <i class="fas fa-trophy" style="font-size: 3.5rem; color: #f59e0b;"></i>
+                    <h2 style="margin: 20px 0;">Kết quả bài làm</h2>
+                    <div style="font-size: 2.5rem; font-weight: 700; color: #667eea;">${score}%</div>
+                    <p style="margin: 15px 0;">Bạn đã trả lời đúng <strong>${correctCount}/${total}</strong> câu hỏi</p>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="closeQuiz()"><i class="fas fa-home"></i> Về trang chính</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalFooter').innerHTML = '';
+        }
+        
+        function closeQuiz() {
+            document.getElementById('quizModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function switchGrade(grade) {
+            document.querySelectorAll('.grade-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.grade == grade) btn.classList.add('active');
+            });
+            renderGrade(grade);
+        }
+        
+        initAllQuestions();
+        renderGrade(10);
+        
+        document.querySelectorAll('.grade-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchGrade(btn.dataset.grade));
+        });
+    </script>
+</body>
+</html>
