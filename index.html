@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa Học THPT - Trắc Nghiệm & Chatbot Gemini</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #10b981, #059669);
+            --secondary-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+            --text-dark: #2c3e50;
+            --text-light: #ecf0f1;
+            --bg-light: #fefefe;
+            --card-bg: #ffffff;
+            --shadow-subtle: rgba(0, 0, 0, 0.08);
+            --shadow-strong: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            text-align: center;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section - Phần đầu trang lớn và nổi bật */
+        .hero-section {
+            background: var(--primary-gradient);
+            color: var(--text-light);
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--shadow-subtle);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg"><path fill="%23fefefe" fill-opacity="1" d="M0,64L48,53.3C96,43,192,21,288,26.7C384,32,480,64,576,64C672,64,768,32,864,21.3C960,11,1056,21,1152,32C1248,43,1344,53,1392,58.7L1440,64L1440,100L1392,100C1344,100,1248,100,1152,100C1056,100,960,100,864,100C768,100,672,100,576,100C480,100,384,100,288,100C192,100,96,100,48,100L0,100Z"></path></svg>') no-repeat bottom center;
+            background-size: cover;
+            transform: translateY(1px);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-content h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.8em;
+            margin-bottom: 15px;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Main Content Section */
+        .main-content {
+            max-width: 1200px;
+            margin: -50px auto 50px auto;
+            padding: 30px;
+            background-color: var(--bg-light);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-subtle);
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5em;
+            color: var(--text-dark);
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-gradient);
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-dark);
+            padding: 35px;
+            box-shadow: 0 5px 20px var(--shadow-subtle);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 15px 40px var(--shadow-strong);
+        }
+
+        .feature-card i {
+            font-size: 3.5em;
+            margin-bottom: 25px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+        
+        .feature-card:nth-child(even) i {
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .feature-card p {
+            font-size: 1.05em;
+            color: #555;
+            text-align: center;
+        }
+
+        /* Badge mới cho tính năng */
+        .feature-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-size: 0.7em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            padding: 30px 20px;
+            font-size: 0.95em;
+            color: var(--text-light);
+            background: var(--text-dark);
+            box-shadow: 0 -4px 15px var(--shadow-subtle);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .hero-content h1 {
+                font-size: 3em;
+            }
+            .hero-content p {
+                font-size: 1.1em;
+            }
+            .main-content {
+                margin: -30px auto 30px auto;
+                padding: 25px;
+            }
+            .section-title {
+                font-size: 2em;
+            }
+            .feature-card {
+                padding: 30px;
+            }
+            .feature-card h3 {
+                font-size: 1.6em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 60px 15px;
+            }
+            .hero-content h1 {
+                font-size: 2.5em;
+            }
+            .hero-content p {
+                font-size: 1em;
+                margin-bottom: 30px;
+            }
+            .main-content {
+                padding: 20px;
+            }
+            .section-title {
+                font-size: 1.8em;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .feature-card {
+                padding: 25px;
+            }
+            .feature-card i {
+                font-size: 3em;
+                margin-bottom: 20px;
+            }
+            .feature-card h3 {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 40px 10px;
+            }
+            .hero-content h1 {
+                font-size: 2em;
+            }
+            .hero-content p {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>🧪 Hóa Học THPT - Học Tập Thông Minh</h1>
+            <p>Hệ thống hỗ trợ học tập Hóa học cho học sinh lớp 10, 11, 12 với trắc nghiệm theo từng bài và chatbot AI tích hợp Gemini, giúp bạn nắm vững kiến thức và đạt điểm cao trong các kỳ thi.</p>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h2 class="section-title">Tính Năng Hỗ Trợ Học Tập Hóa Học</h2>
+        
+        <div class="features-grid">
+            <!-- Tính năng 1: Trắc nghiệm Hóa học theo bài (đã đổi từ Tư vấn tổ hợp vào 10) -->
+            <a href="tracnghiemhoahoc.html" class="feature-card">
+                <i class="fas fa-flask"></i>
+                <h3>📝 Trắc nghiệm Hóa học</h3>
+                <p>Hệ thống trắc nghiệm theo từng bài, từng chương của chương trình Hóa học lớp 10, 11, 12. Có đáp án và giải thích chi tiết.</p>
+                <span class="feature-badge">Lớp 10 • 11 • 12</span>
+            </a>
+            
+            <!-- Tính năng 2: Chatbot Hóa học Gemini AI (đã đổi từ Chatbot AI Tư vấn Đại học) -->
+            <a href="chatbot-hoahoc-gemini.html" class="feature-card">
+                <i class="fas fa-robot"></i>
+                <h3>🤖 Chatbot Hóa học (Gemini AI)</h3>
+                <p>Trợ lý ảo thông minh tích hợp Google Gemini API, sẵn sàng giải đáp mọi thắc mắc về Hóa học, hướng dẫn giải bài tập và phương pháp học tập hiệu quả.</p>
+                <span class="feature-badge">AI • 24/7 • Miễn phí</span>
+            </a>
+        </div>
+        
+        <!-- Thêm thông tin giới thiệu ngắn -->
+        <div style="margin-top: 40px; padding: 20px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px;">
+            <h3 style="color: #059669; margin-bottom: 10px;">🌟 Tại sao nên sử dụng?</h3>
+            <p style="color: #2c3e50;">Hóa học là môn học quan trọng trong chương trình THPT, là nền tảng cho nhiều ngành nghề như Y Dược, Công nghệ sinh học, Kỹ thuật hóa học... Hệ thống của chúng tôi giúp bạn:</p>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px;">
+                <div><i class="fas fa-check-circle" style="color: #10b981;"></i> Ôn tập kiến thức theo từng bài</div>
+                <div><i class="fas fa-check-circle" style="color: #10b981;"></i> Làm trắc nghiệm có đáp án chi tiết</div>
+                <div><i class="fas fa-check-circle" style="color: #10b981;"></i> Hỏi đáp với AI 24/7</div>
+                <div><i class="fas fa-check-circle" style="color: #10b981;"></i> Chuẩn bị tốt cho kỳ thi THPT Quốc gia</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 | Hệ thống hỗ trợ học tập Hóa học THPT | Tích hợp Google Gemini AI</p>
+        <p style="font-size: 0.8em; margin-top: 10px;">Học Hóa thông minh - Đạt điểm cao cùng AI</p>
+    </div>
+</body>
+</html>
